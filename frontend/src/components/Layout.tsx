@@ -13,7 +13,6 @@ const menuByRole: Record<Role, MenuItem[]> = {
   admin: [
     { to: '/', label: 'Dashboard' },
     { href: trackingExternalUrl, label: 'Tracking' },
-    { to: '/orders', label: 'Orders' },
     { to: '/suppliers', label: 'Suppliers' },
     { to: '/sellers', label: 'Sellers' },
     { to: '/products', label: 'Products' },
@@ -22,7 +21,6 @@ const menuByRole: Record<Role, MenuItem[]> = {
   manager: [
     { to: '/', label: 'Dashboard' },
     { href: trackingExternalUrl, label: 'Tracking' },
-    { to: '/orders', label: 'Orders' },
     { to: '/suppliers', label: 'Suppliers' },
     { to: '/sellers', label: 'Sellers' },
     { to: '/products', label: 'Products' },
