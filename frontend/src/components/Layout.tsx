@@ -7,13 +7,20 @@ type MenuItem = {
   label: string;
   to?: string;
   href?: string;
+  children?: Array<{ label: string; to: string }>;
 };
 
 const menuByRole: Record<Role, MenuItem[]> = {
   admin: [
     { to: '/', label: 'Dashboard' },
     { href: trackingExternalUrl, label: 'Tracking' },
-    { to: '/suppliers', label: 'Suppliers' },
+    {
+      label: 'Suppliers',
+      children: [
+        { to: '/suppliers', label: 'Supplier List' },
+        { to: '/suppliers/new', label: 'Add New Supplier' }
+      ]
+    },
     { to: '/sellers', label: 'Sellers' },
     { to: '/products', label: 'Products' },
     { to: '/invoices', label: 'Invoices' }
@@ -21,7 +28,13 @@ const menuByRole: Record<Role, MenuItem[]> = {
   manager: [
     { to: '/', label: 'Dashboard' },
     { href: trackingExternalUrl, label: 'Tracking' },
-    { to: '/suppliers', label: 'Suppliers' },
+    {
+      label: 'Suppliers',
+      children: [
+        { to: '/suppliers', label: 'Supplier List' },
+        { to: '/suppliers/new', label: 'Add New Supplier' }
+      ]
+    },
     { to: '/sellers', label: 'Sellers' },
     { to: '/products', label: 'Products' },
     { to: '/invoices', label: 'Invoices' }
@@ -62,6 +75,23 @@ export function Layout() {
                 >
                   {item.label}
                 </a>
+              ) : item.children ? (
+                <div key={item.label} className="space-y-1 rounded-xl bg-slate-800/40 px-3 py-2">
+                  <div className="px-1 text-xs font-semibold uppercase tracking-wide text-slate-400">{item.label}</div>
+                  {item.children.map((child) => (
+                    <NavLink
+                      key={child.to}
+                      to={child.to}
+                      className={({ isActive }) =>
+                        `block rounded-lg px-3 py-2 text-sm transition ${
+                          isActive ? 'bg-emerald-500 text-slate-950' : 'text-slate-200 hover:bg-slate-800'
+                        }`
+                      }
+                    >
+                      {child.label}
+                    </NavLink>
+                  ))}
+                </div>
               ) : (
                 <NavLink
                   key={item.to}
