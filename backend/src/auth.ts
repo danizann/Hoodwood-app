@@ -50,27 +50,3 @@ export function allowRoles(...roles: Role[]) {
     next();
   };
 }
-
-export function createRateLimiter(options: { windowMs: number; maxRequests: number }) {
-  const hits = new Map<string, { count: number; resetAt: number }>();
-
-  return (request: Request, response: Response, next: NextFunction): void => {
-    const now = Date.now();
-    const key = `${request.ip ?? 'unknown'}:${request.path}`;
-    const current = hits.get(key);
-
-    if (!current || current.resetAt <= now) {
-      hits.set(key, { count: 1, resetAt: now + options.windowMs });
-      next();
-      return;
-    }
-
-    if (current.count >= options.maxRequests) {
-      response.status(429).json({ message: 'Too many requests. Please try again shortly.' });
-      return;
-    }
-
-    current.count += 1;
-    next();
-  };
-}

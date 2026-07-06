@@ -1,8 +1,9 @@
 import bcrypt from 'bcryptjs';
 import cors from 'cors';
 import express, { type NextFunction, type Request, type Response } from 'express';
+import { rateLimit } from 'express-rate-limit';
 import { z } from 'zod';
-import { allowRoles, createRateLimiter, requireAuth, signToken, type AuthedRequest } from './auth.js';
+import { allowRoles, requireAuth, signToken, type AuthedRequest } from './auth.js';
 import type { AppStorage } from './storage.js';
 import { TRACKING_SORT_FIELDS } from './types.js';
 
@@ -35,8 +36,8 @@ function sanitizeUser(user: Awaited<ReturnType<AppStorage['findUserById']>>) {
 
 export function createApp(storage: AppStorage) {
   const app = express();
-  const authRateLimiter = createRateLimiter({ windowMs: 60_000, maxRequests: 60 });
-  const loginRateLimiter = createRateLimiter({ windowMs: 60_000, maxRequests: 10 });
+  const authRateLimiter = rateLimit({ windowMs: 60_000, limit: 60, standardHeaders: 'draft-8', legacyHeaders: false });
+  const loginRateLimiter = rateLimit({ windowMs: 60_000, limit: 10, standardHeaders: 'draft-8', legacyHeaders: false });
 
   app.use(cors());
   app.use(express.json());
