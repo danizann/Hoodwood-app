@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../auth';
 import { api } from '../api';
 
@@ -19,10 +19,24 @@ const roleCopy = {
 export function DashboardPage() {
   const { user } = useAuth();
   const [data, setData] = useState<DashboardResponse | null>(null);
+  const [lastUpdatedAt, setLastUpdatedAt] = useState<string | null>(null);
+
+  const fetchDashboard = useCallback(async () => {
+    const response = await api.get<DashboardResponse>('/dashboard');
+    setData(response.data);
+    setLastUpdatedAt(new Date().toLocaleTimeString('id-ID'));
+  }, []);
 
   useEffect(() => {
-    api.get<DashboardResponse>('/dashboard').then((response) => setData(response.data));
-  }, []);
+    fetchDashboard().catch(() => undefined);
+    const intervalId = window.setInterval(() => {
+      fetchDashboard().catch(() => undefined);
+    }, 10_000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [fetchDashboard]);
 
   if (!user) {
     return null;
@@ -38,6 +52,9 @@ export function DashboardPage() {
         </article>
         <article className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
           <p className="text-sm text-slate-400">System summary</p>
+          <p className="mt-1 text-xs text-slate-500">
+            {lastUpdatedAt ? `Realtime update • ${lastUpdatedAt}` : 'Mengambil data terbaru...'}
+          </p>
           <div className="mt-4 grid grid-cols-2 gap-3">
             <div className="rounded-2xl bg-slate-800/70 p-4">
               <div className="text-sm text-slate-400">Orders</div>
