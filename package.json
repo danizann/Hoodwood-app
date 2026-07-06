@@ -1,0 +1,50 @@
+{
+  "name": "hoodwood-app",
+  "version": "1.0.0",
+  "description": "Complete Warehouse Administration System - Full stack application for managing suppliers, sellers, products, orders, invoices, and shipment tracking",
+  "type": "module",
+  "private": true,
+  "keywords": [
+    "warehouse",
+    "admin",
+    "management",
+    "inventory",
+    "tracking",
+    "resi",
+    "order",
+    "invoice",
+    "supplier",
+    "seller"
+  ],
+  "author": "Dani Zann",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danizann/Hoodwood-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/danizann/Hoodwood-app/issues"
+  },
+  "homepage": "https://github.com/danizann/Hoodwood-app#readme",
+  "scripts": {
+    "setup": "echo 'Setup complete. Follow GETTING_STARTED.md for next steps'",
+    "install-all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev": "concurrently \"npm run dev-backend\" \"npm run dev-frontend\"",
+    "dev-backend": "cd backend && npm run dev",
+    "dev-frontend": "cd frontend && npm run dev",
+    "build": "cd backend && npm run build && cd ../frontend && npm run build",
+    "build-backend": "cd backend && npm run build",
+    "build-frontend": "cd frontend && npm run build",
+    "migrate": "cd backend && npm run migrate",
+    "seed": "cd backend && npm run seed",
+    "start": "cd backend && npm run start",
+    "preview": "cd frontend && npm run preview"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
