@@ -9,6 +9,7 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "migrate": "tsx src/scripts/migrate.ts",
+    "migrate:reset": "tsx src/scripts/migrate-reset.ts",
     "seed": "tsx src/scripts/seed.ts"
   },
   "keywords": [],
