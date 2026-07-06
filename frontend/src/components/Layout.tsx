@@ -1,10 +1,18 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth, type Role } from '../auth';
 
-const menuByRole: Record<Role, Array<{ to: string; label: string }>> = {
+const trackingExternalUrl = 'https://cekresi.com/';
+
+type MenuItem = {
+  label: string;
+  to?: string;
+  href?: string;
+};
+
+const menuByRole: Record<Role, MenuItem[]> = {
   admin: [
     { to: '/', label: 'Dashboard' },
-    { to: '/tracking', label: 'Tracking' },
+    { href: trackingExternalUrl, label: 'Tracking' },
     { to: '/orders', label: 'Orders' },
     { to: '/suppliers', label: 'Suppliers' },
     { to: '/sellers', label: 'Sellers' },
@@ -13,7 +21,7 @@ const menuByRole: Record<Role, Array<{ to: string; label: string }>> = {
   ],
   manager: [
     { to: '/', label: 'Dashboard' },
-    { to: '/tracking', label: 'Tracking' },
+    { href: trackingExternalUrl, label: 'Tracking' },
     { to: '/orders', label: 'Orders' },
     { to: '/suppliers', label: 'Suppliers' },
     { to: '/sellers', label: 'Sellers' },
@@ -22,7 +30,7 @@ const menuByRole: Record<Role, Array<{ to: string; label: string }>> = {
   ],
   staff: [
     { to: '/', label: 'Dashboard' },
-    { to: '/tracking', label: 'Tracking' }
+    { href: trackingExternalUrl, label: 'Tracking' }
   ]
 };
 
@@ -45,17 +53,29 @@ export function Layout() {
           </Link>
           <p className="mt-2 text-sm text-slate-400">Warehouse dashboard with authentication, tracking, and role-based access.</p>
           <nav className="mt-6 space-y-2">
-            {items.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  `block rounded-xl px-4 py-3 text-sm transition ${isActive ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800/60 text-slate-200 hover:bg-slate-800'}`
-                }
-              >
-                {item.label}
-              </NavLink>
-            ))}
+            {items.map((item) =>
+              item.href ? (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block rounded-xl bg-slate-800/60 px-4 py-3 text-sm text-slate-200 transition hover:bg-slate-800"
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <NavLink
+                  key={item.to}
+                  to={item.to!}
+                  className={({ isActive }) =>
+                    `block rounded-xl px-4 py-3 text-sm transition ${isActive ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800/60 text-slate-200 hover:bg-slate-800'}`
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              )
+            )}
           </nav>
         </aside>
 
