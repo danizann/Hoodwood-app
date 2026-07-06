@@ -2,6 +2,23 @@
 
 Perintah-perintah cepat untuk menjalankan Hoodwood App.
 
+## 🖥️ Windows Setup (Pertama Kali)
+
+**Cara termudah** — klik dua kali atau jalankan salah satu:
+
+```bat
+REM CMD / Command Prompt:
+setup.bat
+
+REM PowerShell:
+.\setup.ps1
+```
+
+> Jika PowerShell menolak karena execution policy, jalankan dulu:
+> `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+
+---
+
 ## 🚀 Start All (Recommended)
 
 ```bash
@@ -14,39 +31,56 @@ cd frontend
 npm run dev
 ```
 
-Atau gunakan concurrently:
+Atau gunakan concurrently (satu terminal):
 ```bash
-npm install -g concurrently
 npm run dev
 ```
 
 ## 🗄️ Database Setup (First Time Only)
 
 ```bash
-# Create database
+# Connect ke PostgreSQL lalu jalankan:
 psql -U postgres
 CREATE DATABASE hoodwood_db;
 CREATE USER hoodwood_user WITH PASSWORD 'password123';
 GRANT ALL PRIVILEGES ON DATABASE hoodwood_db TO hoodwood_user;
 \q
+```
 
-# Or run in one command (Linux/macOS):
+**Linux/macOS — satu baris:**
+```bash
 psql -U postgres -c "CREATE DATABASE hoodwood_db;" && \
 psql -U postgres -c "CREATE USER hoodwood_user WITH PASSWORD 'password123';" && \
 psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE hoodwood_db TO hoodwood_user;"
 ```
 
+**Windows CMD — satu baris:**
+```bat
+psql -U postgres -c "CREATE DATABASE hoodwood_db;" && psql -U postgres -c "CREATE USER hoodwood_user WITH PASSWORD 'password123';" && psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE hoodwood_db TO hoodwood_user;"
+```
+
 ## 📦 Install & Migrate
 
+**Linux/macOS:**
 ```bash
-# Backend
 cd backend
 cp .env.example .env
 npm install
 npm run migrate
 npm run seed
 
-# Frontend
+cd ../frontend
+npm install
+```
+
+**Windows CMD:**
+```bat
+cd backend
+copy .env.example .env
+npm install
+npm run migrate
+npm run seed
+cd ..
 cd frontend
 npm install
 ```
@@ -55,7 +89,6 @@ npm install
 
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:5000
-- **API Docs**: See docs/API.md
 
 ## 🔐 Login Credentials
 
@@ -127,6 +160,7 @@ http://localhost:3000
 
 ## 🆘 Quick Troubleshooting
 
+**Linux/macOS:**
 ```bash
 # Kill port 5000 (backend)
 lsof -ti:5000 | xargs kill -9
@@ -136,8 +170,33 @@ lsof -ti:3000 | xargs kill -9
 
 # Check PostgreSQL status
 pg_isready
+```
 
-# Reconnect to database
+**Windows CMD:**
+```bat
+REM Kill port 5000 (backend) — cari PID dulu lalu kill
+netstat -ano | findstr :5000
+taskkill /PID <PID_NUMBER> /F
+
+REM Kill port 3000 (frontend)
+netstat -ano | findstr :3000
+taskkill /PID <PID_NUMBER> /F
+
+REM Check PostgreSQL status
+pg_isready
+```
+
+**Windows PowerShell:**
+```powershell
+# Kill port 5000 (backend)
+Stop-Process -Id (Get-NetTCPConnection -LocalPort 5000).OwningProcess -Force
+
+# Kill port 3000 (frontend)
+Stop-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess -Force
+```
+
+**Reconnect to database:**
+```bash
 psql -U hoodwood_user -d hoodwood_db
 ```
 
