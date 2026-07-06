@@ -129,6 +129,7 @@ export class FileStorage extends MemoryStorage {
   }
 
   private async persist(): Promise<void> {
+    await mkdir(dirname(this.filePath), { recursive: true });
     await writeFile(this.filePath, JSON.stringify(this.data, null, 2), 'utf8');
   }
 }
