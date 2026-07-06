@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import cors from 'cors';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import { z } from 'zod';
-import { allowRoles, requireAuth, signToken, type AuthedRequest } from './auth.js';
+import { allowRoles, createRateLimiter, requireAuth, signToken, type AuthedRequest } from './auth.js';
 import type { AppStorage } from './storage.js';
 import { TRACKING_SORT_FIELDS } from './types.js';
 
@@ -35,6 +35,8 @@ function sanitizeUser(user: Awaited<ReturnType<AppStorage['findUserById']>>) {
 
 export function createApp(storage: AppStorage) {
   const app = express();
+  const authRateLimiter = createRateLimiter({ windowMs: 60_000, maxRequests: 60 });
+  const loginRateLimiter = createRateLimiter({ windowMs: 60_000, maxRequests: 10 });
 
   app.use(cors());
   app.use(express.json());
@@ -43,7 +45,7 @@ export function createApp(storage: AppStorage) {
     response.json({ ok: true });
   });
 
-  app.post('/api/auth/register', async (request, response, next) => {
+  app.post('/api/auth/register', loginRateLimiter, async (request, response, next) => {
     try {
       const input = registerSchema.parse(request.body);
       const existing = await storage.findUserByEmail(input.email);
@@ -74,7 +76,7 @@ export function createApp(storage: AppStorage) {
     }
   });
 
-  app.post('/api/auth/login', async (request, response, next) => {
+  app.post('/api/auth/login', loginRateLimiter, async (request, response, next) => {
     try {
       const input = loginSchema.parse(request.body);
       const user = await storage.findUserByEmail(input.email);
@@ -97,7 +99,7 @@ export function createApp(storage: AppStorage) {
     }
   });
 
-  app.get('/api/auth/me', requireAuth, async (request: AuthedRequest, response, next) => {
+  app.get('/api/auth/me', authRateLimiter, requireAuth, async (request: AuthedRequest, response, next) => {
     try {
       const user = await storage.findUserById(request.authUser!.sub);
       if (!user) {
@@ -110,7 +112,7 @@ export function createApp(storage: AppStorage) {
     }
   });
 
-  app.get('/api/dashboard', requireAuth, allowRoles('admin', 'manager', 'staff'), async (request: AuthedRequest, response, next) => {
+  app.get('/api/dashboard', authRateLimiter, requireAuth, allowRoles('admin', 'manager', 'staff'), async (request: AuthedRequest, response, next) => {
     try {
       const orders = await storage.listOrders();
       const tracking = await storage.searchTracking({
@@ -132,7 +134,7 @@ export function createApp(storage: AppStorage) {
     }
   });
 
-  app.get('/api/orders', requireAuth, allowRoles('admin', 'manager'), async (_request, response, next) => {
+  app.get('/api/orders', authRateLimiter, requireAuth, allowRoles('admin', 'manager'), async (_request, response, next) => {
     try {
       response.json({ data: await storage.listOrders() });
     } catch (error) {
@@ -140,7 +142,7 @@ export function createApp(storage: AppStorage) {
     }
   });
 
-  app.get('/api/tracking/search', requireAuth, allowRoles('admin', 'manager', 'staff'), async (request, response, next) => {
+  app.get('/api/tracking/search', authRateLimiter, requireAuth, allowRoles('admin', 'manager', 'staff'), async (request, response, next) => {
     try {
       const params = searchSchema.parse({
         query: request.query.resi ?? request.query.query ?? '',
@@ -155,7 +157,7 @@ export function createApp(storage: AppStorage) {
     }
   });
 
-  app.get('/api/tracking/:resiNumber', requireAuth, allowRoles('admin', 'manager', 'staff'), async (request, response, next) => {
+  app.get('/api/tracking/:resiNumber', authRateLimiter, requireAuth, allowRoles('admin', 'manager', 'staff'), async (request, response, next) => {
     try {
       const tracking = await storage.getTrackingByResi(String(request.params.resiNumber));
       if (!tracking) {
