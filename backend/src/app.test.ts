@@ -57,3 +57,17 @@ test('staff cannot access management orders endpoint', async () => {
   const orders = await request(app).get('/api/orders').set('Authorization', 'Bearer ' + response.body.token);
   assert.equal(orders.status, 403);
 });
+
+test('orders endpoint returns invoice and pricing details', async () => {
+  const { app, response } = await loginAs('admin@hoodwood.com', 'admin123');
+  const ordersResponse = await request(app).get('/api/orders').set('Authorization', 'Bearer ' + response.body.token);
+
+  assert.equal(ordersResponse.status, 200);
+  assert.ok(Array.isArray(ordersResponse.body.data));
+  assert.equal(typeof ordersResponse.body.data[0].productName, 'string');
+  assert.equal(typeof ordersResponse.body.data[0].invoiceNumber, 'string');
+  assert.equal(typeof ordersResponse.body.data[0].unitPrice, 'number');
+  assert.equal(typeof ordersResponse.body.data[0].shippingCost, 'number');
+  assert.equal(typeof ordersResponse.body.data[0].taxAmount, 'number');
+  assert.equal(typeof ordersResponse.body.data[0].totalPrice, 'number');
+});

@@ -29,6 +29,13 @@ export interface Order {
   id: string;
   orderNumber: string;
   customerName: string;
+  productName: string;
+  invoiceNumber: string;
+  unitPrice: number;
+  quantity: number;
+  shippingCost: number;
+  taxAmount: number;
+  totalPrice: number;
   resiNumber: string | null;
   createdAt: string;
 }

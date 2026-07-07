@@ -45,10 +45,32 @@ for (const tracking of defaultTrackingRecords) {
 
 for (const order of defaultOrders) {
   await pool.query(
-    `INSERT INTO orders (id, order_number, customer_name, resi_number, created_at)
-     VALUES ($1, $2, $3, $4, $5)
-     ON CONFLICT (order_number) DO UPDATE SET customer_name = EXCLUDED.customer_name, resi_number = EXCLUDED.resi_number`,
-    [order.id, order.orderNumber, order.customerName, order.resiNumber, order.createdAt]
+    `INSERT INTO orders (id, order_number, customer_name, product_name, invoice_number, unit_price, quantity, shipping_cost, tax_amount, total_price, resi_number, created_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+     ON CONFLICT (order_number) DO UPDATE SET
+       customer_name = EXCLUDED.customer_name,
+       product_name = EXCLUDED.product_name,
+       invoice_number = EXCLUDED.invoice_number,
+       unit_price = EXCLUDED.unit_price,
+       quantity = EXCLUDED.quantity,
+       shipping_cost = EXCLUDED.shipping_cost,
+       tax_amount = EXCLUDED.tax_amount,
+       total_price = EXCLUDED.total_price,
+       resi_number = EXCLUDED.resi_number`,
+    [
+      order.id,
+      order.orderNumber,
+      order.customerName,
+      order.productName,
+      order.invoiceNumber,
+      order.unitPrice,
+      order.quantity,
+      order.shippingCost,
+      order.taxAmount,
+      order.totalPrice,
+      order.resiNumber,
+      order.createdAt
+    ]
   );
 }
 

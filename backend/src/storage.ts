@@ -57,6 +57,29 @@ function paginateTracking(items: TrackingRecord[], params: TrackingSearchParams)
   };
 }
 
+function normalizeOrder(order: Partial<Order> & Pick<Order, 'id' | 'orderNumber' | 'customerName' | 'resiNumber' | 'createdAt'>): Order {
+  const unitPrice = Number(order.unitPrice ?? 0);
+  const quantity = Number(order.quantity ?? 1);
+  const shippingCost = Number(order.shippingCost ?? 0);
+  const taxAmount = Number(order.taxAmount ?? 0);
+  const totalPrice = Number(order.totalPrice ?? unitPrice * quantity + shippingCost + taxAmount);
+
+  return {
+    id: order.id,
+    orderNumber: order.orderNumber,
+    customerName: order.customerName,
+    productName: order.productName ?? 'Unknown Product',
+    invoiceNumber: order.invoiceNumber ?? '-',
+    unitPrice,
+    quantity,
+    shippingCost,
+    taxAmount,
+    totalPrice,
+    resiNumber: order.resiNumber,
+    createdAt: order.createdAt
+  };
+}
+
 export class MemoryStorage implements AppStorage {
   protected data: AppData = cloneData();
 
@@ -98,7 +121,9 @@ export class MemoryStorage implements AppStorage {
   }
 
   async listOrders(): Promise<Order[]> {
-    return [...this.data.orders].sort((left, right) => right.createdAt.localeCompare(left.createdAt));
+    return [...this.data.orders]
+      .map((order) => normalizeOrder(order))
+      .sort((left, right) => right.createdAt.localeCompare(left.createdAt));
   }
 }
 
@@ -157,13 +182,20 @@ function mapTrackingRow(row: Record<string, string>): TrackingRecord {
 }
 
 function mapOrderRow(row: Record<string, string>): Order {
-  return {
+  return normalizeOrder({
     id: row.id,
     orderNumber: row.order_number,
     customerName: row.customer_name,
+    productName: row.product_name,
+    invoiceNumber: row.invoice_number,
+    unitPrice: Number(row.unit_price ?? 0),
+    quantity: Number(row.quantity ?? 0),
+    shippingCost: Number(row.shipping_cost ?? 0),
+    taxAmount: Number(row.tax_amount ?? 0),
+    totalPrice: Number(row.total_price ?? 0),
     resiNumber: row.resi_number,
     createdAt: new Date(row.created_at).toISOString()
-  };
+  });
 }
 
 export class PostgresStorage implements AppStorage {
@@ -187,8 +219,21 @@ export class PostgresStorage implements AppStorage {
     }
     for (const order of defaultOrders) {
       await this.pool.query(
-        'INSERT INTO orders (id, order_number, customer_name, resi_number, created_at) VALUES ($1, $2, $3, $4, $5)',
-        [order.id, order.orderNumber, order.customerName, order.resiNumber, order.createdAt]
+        'INSERT INTO orders (id, order_number, customer_name, product_name, invoice_number, unit_price, quantity, shipping_cost, tax_amount, total_price, resi_number, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)',
+        [
+          order.id,
+          order.orderNumber,
+          order.customerName,
+          order.productName,
+          order.invoiceNumber,
+          order.unitPrice,
+          order.quantity,
+          order.shippingCost,
+          order.taxAmount,
+          order.totalPrice,
+          order.resiNumber,
+          order.createdAt
+        ]
       );
     }
   }

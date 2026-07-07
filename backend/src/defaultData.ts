@@ -44,7 +44,46 @@ export const defaultTrackingRecords: TrackingRecord[] = [
 ];
 
 export const defaultOrders: Order[] = [
-  { id: randomUUID(), orderNumber: 'ORD-001', customerName: 'CV Maju Jaya', resiNumber: 'HW1001A', createdAt: iso(7) },
-  { id: randomUUID(), orderNumber: 'ORD-002', customerName: 'Toko Sukses', resiNumber: 'HW1002B', createdAt: iso(6) },
-  { id: randomUUID(), orderNumber: 'ORD-003', customerName: 'Outlet Bandung', resiNumber: 'HW1003C', createdAt: iso(5) }
+  {
+    id: randomUUID(),
+    orderNumber: 'ORD-001',
+    customerName: 'CV Maju Jaya',
+    productName: 'Premium Storage Rack',
+    invoiceNumber: 'INV-2026-001',
+    unitPrice: 1500000,
+    quantity: 2,
+    shippingCost: 120000,
+    taxAmount: 312000,
+    totalPrice: 3432000,
+    resiNumber: 'HW1001A',
+    createdAt: iso(7)
+  },
+  {
+    id: randomUUID(),
+    orderNumber: 'ORD-002',
+    customerName: 'Toko Sukses',
+    productName: 'Warehouse Hand Pallet',
+    invoiceNumber: 'INV-2026-002',
+    unitPrice: 2200000,
+    quantity: 1,
+    shippingCost: 90000,
+    taxAmount: 229000,
+    totalPrice: 2519000,
+    resiNumber: 'HW1002B',
+    createdAt: iso(6)
+  },
+  {
+    id: randomUUID(),
+    orderNumber: 'ORD-003',
+    customerName: 'Outlet Bandung',
+    productName: 'Barcode Scanner Pro',
+    invoiceNumber: 'INV-2026-003',
+    unitPrice: 850000,
+    quantity: 3,
+    shippingCost: 75000,
+    taxAmount: 280500,
+    totalPrice: 2905500,
+    resiNumber: 'HW1003C',
+    createdAt: iso(5)
+  }
 ];
