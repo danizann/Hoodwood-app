@@ -17,8 +17,8 @@ const menuByRole: Record<Role, MenuItem[]> = {
     {
       label: 'Suppliers',
       children: [
-        { to: '/suppliers', label: 'Supplier List' },
-        { to: '/suppliers/new', label: 'Add New Supplier' }
+        { to: '/suppliers', label: 'Maintain Supplier' },
+        { to: '/suppliers/account/new', label: 'Add Supplier Account' }
       ]
     },
     { to: '/sellers', label: 'Sellers' },
@@ -31,8 +31,8 @@ const menuByRole: Record<Role, MenuItem[]> = {
     {
       label: 'Suppliers',
       children: [
-        { to: '/suppliers', label: 'Supplier List' },
-        { to: '/suppliers/new', label: 'Add New Supplier' }
+        { to: '/suppliers', label: 'Maintain Supplier' },
+        { to: '/suppliers/account/new', label: 'Add Supplier Account' }
       ]
     },
     { to: '/sellers', label: 'Sellers' },

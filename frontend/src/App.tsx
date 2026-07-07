@@ -23,8 +23,9 @@ export default function App() {
                   path="/orders"
                   element={<OrdersPage />}
                 />
-                <Route path="/suppliers" element={<PlaceholderPage title="Supplier List" description="Manager and admin management area for supplier records." />} />
-                <Route path="/suppliers/new" element={<PlaceholderPage title="Add New Supplier" description="Create and register a new supplier record." />} />
+                <Route path="/suppliers" element={<PlaceholderPage title="Maintain Supplier" description="Manager and admin maintenance area for supplier records." />} />
+                <Route path="/suppliers/account/new" element={<PlaceholderPage title="Add Supplier Account" description="Create and register a new supplier account." />} />
+                <Route path="/suppliers/new" element={<PlaceholderPage title="Add Supplier Account" description="Create and register a new supplier account." />} />
                 <Route path="/sellers" element={<PlaceholderPage title="Sellers" description="Manager and admin management area for seller records." />} />
                 <Route path="/products" element={<PlaceholderPage title="Products" description="Manager and admin management area for product inventory." />} />
                 <Route path="/invoices" element={<PlaceholderPage title="Invoices" description="Manager and admin management area for invoice workflows." />} />
